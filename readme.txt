@@ -12,7 +12,9 @@ Convert Classic Editor content to Gutenberg blocks in one click — with automat
 
 == Description ==
 
-The Classic Editor era is ending. This plugin migrates all of your legacy content to native Gutenberg blocks in one click — safely.
+WordPress is gradually phasing out the Classic block: core contributors have begun deprecating it, with the long-term goal of making TinyMCE opt-in. Your classic content will keep working — but the modern editing experience, block tools, patterns and styling all live in native blocks. This plugin migrates your entire site's legacy content to native Gutenberg blocks in one click — safely.
+
+WordPress core offers a per-block "Convert to blocks" action, one post at a time. This plugin does it for your whole site at once.
 
 * **One click** — scan your whole site and convert every classic post, page and custom post type at once, with a live progress bar.
 * **Faithful conversion** — uses `wp.blocks.rawHandler()`, the exact same converter behind the block editor's own "Convert to Blocks" button. Paragraphs, headings, images, galleries, lists, quotes, tables, embeds and shortcodes become proper blocks.
@@ -21,6 +23,10 @@ The Classic Editor era is ending. This plugin migrates all of your legacy conten
 * **100% free** — no ads, no upsells, no premium version, no payment dependency of any kind.
 
 == Frequently Asked Questions ==
+
+= Is WordPress removing the Classic Editor or my classic content? =
+
+No. The Classic Editor plugin is unaffected, and existing classic content will keep rendering and stay editable. What is changing: the Classic block is being deprecated and will eventually be hidden behind an opt-in. Converting now future-proofs your content and unlocks the full block editing experience.
 
 = Is this safe to run on a live site? =
 
