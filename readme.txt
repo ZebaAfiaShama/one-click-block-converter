@@ -1,8 +1,8 @@
 === One Click Block Converter ===
-Contributors: wpdevteam
+Contributors: zebaafiashama
 Tags: gutenberg, classic editor, convert, blocks, migration
 Requires at least: 5.9
-Tested up to: 6.8
+Tested up to: 7.0
 Requires PHP: 7.2
 Stable tag: 1.0.0
 License: GPLv2 or later
@@ -42,7 +42,11 @@ Shortcodes become Shortcode blocks and keep working exactly as before. Embed URL
 
 = Where are the backups stored? =
 
-In post meta (`_ocbc_original_content`). Reverting a post restores the backup and removes the meta. Backups are kept even if you deactivate the plugin.
+In post meta (`_ocbc_original_content`). Reverting a post restores the backup and removes the meta. Backups are kept when you deactivate the plugin; they are only removed if you delete (uninstall) the plugin.
+
+= Does this plugin call any external services? =
+
+No. Everything runs on your own site — no external requests, no tracking, no accounts.
 
 == Screenshots ==
 

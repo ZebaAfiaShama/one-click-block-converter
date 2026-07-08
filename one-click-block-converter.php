@@ -1,13 +1,13 @@
 <?php
 /**
  * Plugin Name:       One Click Block Converter
- * Plugin URI:        https://github.com/WPDevelopers/one-click-block-converter
+ * Plugin URI:        https://github.com/ZebaAfiaShama/one-click-block-converter
  * Description:       Convert Classic Editor content to Gutenberg blocks in one click — with automatic backups and one-click revert. 100% free, no ads, no upsells, no payment dependencies.
  * Version:           1.0.0
  * Requires at least: 5.9
  * Requires PHP:      7.2
- * Author:            WPDeveloper
- * Author URI:        https://wpdeveloper.com
+ * Author:            Zeba Afia Shama
+ * Author URI:        https://github.com/ZebaAfiaShama
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       one-click-block-converter
@@ -56,6 +56,15 @@ function ocbc_get_supported_post_types() {
 /* -------------------------------------------------------------------------
  * Admin page
  * ---------------------------------------------------------------------- */
+
+add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'ocbc_plugin_action_links' );
+function ocbc_plugin_action_links( $links ) {
+	array_unshift(
+		$links,
+		'<a href="' . esc_url( admin_url( 'tools.php?page=one-click-block-converter' ) ) . '">' . esc_html__( 'Open Converter', 'one-click-block-converter' ) . '</a>'
+	);
+	return $links;
+}
 
 add_action( 'admin_menu', 'ocbc_register_admin_page' );
 function ocbc_register_admin_page() {
@@ -179,8 +188,9 @@ function ocbc_register_rest_routes() {
 			'permission_callback' => 'ocbc_rest_can_edit_post',
 			'args'                => array(
 				'id'      => array(
-					'type'     => 'integer',
-					'required' => true,
+					'type'              => 'integer',
+					'required'          => true,
+					'sanitize_callback' => 'absint',
 				),
 				'content' => array(
 					'type'     => 'string',
@@ -199,8 +209,9 @@ function ocbc_register_rest_routes() {
 			'permission_callback' => 'ocbc_rest_can_edit_post',
 			'args'                => array(
 				'id' => array(
-					'type'     => 'integer',
-					'required' => true,
+					'type'              => 'integer',
+					'required'          => true,
+					'sanitize_callback' => 'absint',
 				),
 			),
 		)

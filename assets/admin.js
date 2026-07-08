@@ -102,8 +102,6 @@
 		Object.keys( attrs || {} ).forEach( function ( key ) {
 			if ( 'text' === key ) {
 				node.textContent = attrs[ key ];
-			} else if ( 'html' === key ) {
-				node.innerHTML = attrs[ key ];
 			} else if ( 0 === key.indexOf( 'on' ) ) {
 				node.addEventListener( key.slice( 2 ), attrs[ key ] );
 			} else {
@@ -199,7 +197,7 @@
 	}
 
 	function render() {
-		app.innerHTML = '';
+		app.replaceChildren();
 
 		var convertAll = el( 'button', {
 			type: 'button',
@@ -352,7 +350,7 @@
 		}
 		registerBlocks();
 		refresh().catch( function ( err ) {
-			app.innerHTML = '';
+			app.replaceChildren();
 			app.appendChild(
 				el( 'div', { class: 'notice notice-error' }, [
 					el( 'p', { text: err.message || __( 'Failed to load posts.', 'one-click-block-converter' ) } ),
