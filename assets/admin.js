@@ -1,5 +1,5 @@
 /**
- * One Click Block Converter — admin app.
+ * BlockShift — admin app.
  *
  * Conversion happens in the browser with wp.blocks.rawHandler(), the exact
  * converter behind the block editor's own "Convert to Blocks" button, then the
@@ -68,12 +68,12 @@
 			serialized = convertContent( post.content );
 		} catch ( err ) {
 			return Promise.reject(
-				new Error( err && err.message ? err.message : __( 'Conversion failed.', 'one-click-block-converter' ) )
+				new Error( err && err.message ? err.message : __( 'Conversion failed.', 'blockshift' ) )
 			);
 		}
 
 		if ( null === serialized ) {
-			return Promise.reject( new Error( __( 'Nothing to convert.', 'one-click-block-converter' ) ) );
+			return Promise.reject( new Error( __( 'Nothing to convert.', 'blockshift' ) ) );
 		}
 
 		return apiFetch( {
@@ -128,10 +128,10 @@
 			actionButton = el( 'button', {
 				type: 'button',
 				class: 'button',
-				text: __( 'Revert', 'one-click-block-converter' ),
+				text: __( 'Revert', 'blockshift' ),
 				onclick: function () {
 					post.uiState = 'working';
-					post.uiMessage = __( 'Reverting…', 'one-click-block-converter' );
+					post.uiMessage = __( 'Reverting…', 'blockshift' );
 					render();
 					revertPost( post )
 						.then( function () {
@@ -142,7 +142,7 @@
 						} )
 						.catch( function ( err ) {
 							post.uiState = 'error';
-							post.uiMessage = err.message || __( 'Revert failed.', 'one-click-block-converter' );
+							post.uiMessage = err.message || __( 'Revert failed.', 'blockshift' );
 							render();
 						} );
 				},
@@ -151,7 +151,7 @@
 			actionButton = el( 'button', {
 				type: 'button',
 				class: 'button',
-				text: __( 'Convert', 'one-click-block-converter' ),
+				text: __( 'Convert', 'blockshift' ),
 				onclick: function () {
 					runQueue( [ post ] );
 				},
@@ -180,10 +180,10 @@
 		return el( 'table', { class: 'widefat striped ocbc-table' }, [
 			el( 'thead', {}, [
 				el( 'tr', {}, [
-					el( 'th', { text: __( 'Title', 'one-click-block-converter' ) } ),
-					el( 'th', { text: __( 'Type', 'one-click-block-converter' ) } ),
-					el( 'th', { text: __( 'Status', 'one-click-block-converter' ) } ),
-					el( 'th', { text: __( 'Action', 'one-click-block-converter' ) } ),
+					el( 'th', { text: __( 'Title', 'blockshift' ) } ),
+					el( 'th', { text: __( 'Type', 'blockshift' ) } ),
+					el( 'th', { text: __( 'Status', 'blockshift' ) } ),
+					el( 'th', { text: __( 'Action', 'blockshift' ) } ),
 				] ),
 			] ),
 			el(
@@ -205,13 +205,13 @@
 			text: state.running
 				? sprintf(
 						/* translators: 1: done count, 2: total count */
-						__( 'Converting… %1$d / %2$d', 'one-click-block-converter' ),
+						__( 'Converting… %1$d / %2$d', 'blockshift' ),
 						state.done,
 						state.queueTotal
 				  )
 				: sprintf(
 						/* translators: %d: number of posts */
-						__( 'Convert All to Blocks (%d)', 'one-click-block-converter' ),
+						__( 'Convert All to Blocks (%d)', 'blockshift' ),
 						state.classic.length
 				  ),
 			onclick: function () {
@@ -240,7 +240,7 @@
 			el( 'h2', {
 				text: sprintf(
 					/* translators: %d: number of posts */
-					__( 'Classic content (%d)', 'one-click-block-converter' ),
+					__( 'Classic content (%d)', 'blockshift' ),
 					state.classic.length
 				),
 			} )
@@ -249,7 +249,7 @@
 			table(
 				state.classic,
 				false,
-				__( 'No classic content found — everything is already blocks. 🎉', 'one-click-block-converter' )
+				__( 'No classic content found — everything is already blocks. 🎉', 'blockshift' )
 			)
 		);
 
@@ -257,7 +257,7 @@
 			el( 'h2', {
 				text: sprintf(
 					/* translators: %d: number of posts */
-					__( 'Converted — revert available (%d)', 'one-click-block-converter' ),
+					__( 'Converted — revert available (%d)', 'blockshift' ),
 					state.converted.length
 				),
 			} )
@@ -266,7 +266,7 @@
 			table(
 				state.converted,
 				true,
-				__( 'Nothing converted yet.', 'one-click-block-converter' )
+				__( 'Nothing converted yet.', 'blockshift' )
 			)
 		);
 	}
@@ -293,18 +293,18 @@
 			}
 
 			post.uiState = 'working';
-			post.uiMessage = __( 'Converting…', 'one-click-block-converter' );
+			post.uiMessage = __( 'Converting…', 'blockshift' );
 			render();
 
 			return convertPost( post )
 				.then( function () {
 					post.uiState = 'done';
-					post.uiMessage = __( 'Converted', 'one-click-block-converter' );
+					post.uiMessage = __( 'Converted', 'blockshift' );
 				} )
 				.catch( function ( err ) {
 					post.uiState = 'error';
 					post.uiMessage =
-						( err && err.message ) || __( 'Failed', 'one-click-block-converter' );
+						( err && err.message ) || __( 'Failed', 'blockshift' );
 				} )
 				.then( function () {
 					state.done++;
@@ -353,7 +353,7 @@
 			app.replaceChildren();
 			app.appendChild(
 				el( 'div', { class: 'notice notice-error' }, [
-					el( 'p', { text: err.message || __( 'Failed to load posts.', 'one-click-block-converter' ) } ),
+					el( 'p', { text: err.message || __( 'Failed to load posts.', 'blockshift' ) } ),
 				] )
 			);
 		} );

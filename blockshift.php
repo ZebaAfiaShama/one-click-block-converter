@@ -1,7 +1,7 @@
 <?php
 /**
- * Plugin Name:       One Click Block Converter
- * Plugin URI:        https://github.com/ZebaAfiaShama/one-click-block-converter
+ * Plugin Name:       BlockShift — One Click Block Converter
+ * Plugin URI:        https://github.com/ZebaAfiaShama/blockshift
  * Description:       Convert Classic Editor content to Gutenberg blocks in one click — with automatic backups and one-click revert. 100% free, no ads, no upsells, no payment dependencies.
  * Version:           1.0.0
  * Requires at least: 5.9
@@ -10,7 +10,7 @@
  * Author URI:        https://github.com/ZebaAfiaShama
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:       one-click-block-converter
+ * Text Domain:       blockshift
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -61,7 +61,7 @@ add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'ocbc_plugin_a
 function ocbc_plugin_action_links( $links ) {
 	array_unshift(
 		$links,
-		'<a href="' . esc_url( admin_url( 'tools.php?page=one-click-block-converter' ) ) . '">' . esc_html__( 'Open Converter', 'one-click-block-converter' ) . '</a>'
+		'<a href="' . esc_url( admin_url( 'tools.php?page=blockshift' ) ) . '">' . esc_html__( 'Open Converter', 'blockshift' ) . '</a>'
 	);
 	return $links;
 }
@@ -69,10 +69,10 @@ function ocbc_plugin_action_links( $links ) {
 add_action( 'admin_menu', 'ocbc_register_admin_page' );
 function ocbc_register_admin_page() {
 	add_management_page(
-		__( 'Block Converter', 'one-click-block-converter' ),
-		__( 'Block Converter', 'one-click-block-converter' ),
+		__( 'Block Converter', 'blockshift' ),
+		__( 'Block Converter', 'blockshift' ),
 		'edit_others_posts',
-		'one-click-block-converter',
+		'blockshift',
 		'ocbc_render_admin_page'
 	);
 }
@@ -80,15 +80,15 @@ function ocbc_register_admin_page() {
 function ocbc_render_admin_page() {
 	?>
 	<div class="wrap ocbc-wrap">
-		<h1><?php esc_html_e( 'One Click Block Converter', 'one-click-block-converter' ); ?></h1>
+		<h1><?php esc_html_e( 'BlockShift — One Click Block Converter', 'blockshift' ); ?></h1>
 		<p class="description">
-			<?php esc_html_e( 'Converts Classic Editor content into Gutenberg blocks using the same converter built into the block editor. The original content of every post is backed up automatically, so you can revert any conversion with one click.', 'one-click-block-converter' ); ?>
+			<?php esc_html_e( 'Converts Classic Editor content into Gutenberg blocks using the same converter built into the block editor. The original content of every post is backed up automatically, so you can revert any conversion with one click.', 'blockshift' ); ?>
 		</p>
 		<div class="notice notice-warning inline">
-			<p><?php esc_html_e( 'Recommended: create a full database backup before running a bulk conversion on a production site.', 'one-click-block-converter' ); ?></p>
+			<p><?php esc_html_e( 'Recommended: create a full database backup before running a bulk conversion on a production site.', 'blockshift' ); ?></p>
 		</div>
 		<div id="ocbc-app">
-			<p><span class="spinner is-active" style="float:none;margin:0 8px 0 0;"></span><?php esc_html_e( 'Loading posts…', 'one-click-block-converter' ); ?></p>
+			<p><span class="spinner is-active" style="float:none;margin:0 8px 0 0;"></span><?php esc_html_e( 'Loading posts…', 'blockshift' ); ?></p>
 		</div>
 	</div>
 	<?php
@@ -96,7 +96,7 @@ function ocbc_render_admin_page() {
 
 add_action( 'admin_enqueue_scripts', 'ocbc_enqueue_assets' );
 function ocbc_enqueue_assets( $hook ) {
-	if ( 'tools_page_one-click-block-converter' !== $hook ) {
+	if ( 'tools_page_blockshift' !== $hook ) {
 		return;
 	}
 
@@ -136,7 +136,7 @@ function ocbc_enqueue_assets( $hook ) {
 		)
 	);
 
-	wp_set_script_translations( 'ocbc-admin', 'one-click-block-converter' );
+	wp_set_script_translations( 'ocbc-admin', 'blockshift' );
 }
 
 /* -------------------------------------------------------------------------
@@ -285,7 +285,7 @@ function ocbc_rest_list_posts( $request ) {
 	foreach ( $query->posts as $post ) {
 		$item = array(
 			'id'        => $post->ID,
-			'title'     => get_the_title( $post ) ? get_the_title( $post ) : __( '(no title)', 'one-click-block-converter' ),
+			'title'     => get_the_title( $post ) ? get_the_title( $post ) : __( '(no title)', 'blockshift' ),
 			'type'      => $post->post_type,
 			'status'    => $post->post_status,
 			'edit_link' => get_edit_post_link( $post->ID, 'raw' ),
@@ -333,11 +333,11 @@ function ocbc_rest_convert( $request ) {
 	$post    = get_post( $id );
 
 	if ( ! $post ) {
-		return new WP_Error( 'ocbc_not_found', __( 'Post not found.', 'one-click-block-converter' ), array( 'status' => 404 ) );
+		return new WP_Error( 'ocbc_not_found', __( 'Post not found.', 'blockshift' ), array( 'status' => 404 ) );
 	}
 
 	if ( '' === trim( $content ) || ! has_blocks( $content ) ) {
-		return new WP_Error( 'ocbc_no_blocks', __( 'Converted content contains no blocks; post left untouched.', 'one-click-block-converter' ), array( 'status' => 400 ) );
+		return new WP_Error( 'ocbc_no_blocks', __( 'Converted content contains no blocks; post left untouched.', 'blockshift' ), array( 'status' => 400 ) );
 	}
 
 	// Keep only the first backup — repeated conversions must not overwrite the true original.
@@ -373,7 +373,7 @@ function ocbc_rest_revert( $request ) {
 	$original = get_post_meta( $id, OCBC_META_ORIGINAL, true );
 
 	if ( '' === (string) $original ) {
-		return new WP_Error( 'ocbc_no_backup', __( 'No backup found for this post.', 'one-click-block-converter' ), array( 'status' => 404 ) );
+		return new WP_Error( 'ocbc_no_backup', __( 'No backup found for this post.', 'blockshift' ), array( 'status' => 404 ) );
 	}
 
 	$result = wp_update_post(

@@ -1,4 +1,4 @@
-# One Click Block Converter
+# BlockShift — One Click Block Converter
 
 Convert Classic Editor content to Gutenberg blocks in one click — with automatic backups and one-click revert. 100% free, no ads, no upsells, no payment dependencies.
 

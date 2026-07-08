@@ -1,6 +1,6 @@
 <?php
 /**
- * Uninstall cleanup for One Click Block Converter.
+ * Uninstall cleanup for BlockShift.
  *
  * Removes the plugin's backup metadata. Converted content itself is left
  * exactly as it is — uninstalling never touches post_content.

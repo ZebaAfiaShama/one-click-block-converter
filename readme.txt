@@ -1,4 +1,4 @@
-=== One Click Block Converter ===
+=== BlockShift — One Click Block Converter ===
 Contributors: zebaafiashama
 Tags: gutenberg, classic editor, convert, blocks, migration
 Requires at least: 5.9
