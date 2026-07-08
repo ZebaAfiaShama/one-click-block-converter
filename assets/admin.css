@@ -1,0 +1,62 @@
+.ocbc-wrap .ocbc-toolbar {
+	margin: 16px 0;
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	flex-wrap: wrap;
+}
+
+.ocbc-progress {
+	flex: 1;
+	min-width: 200px;
+	max-width: 480px;
+	height: 10px;
+	background: #dcdcde;
+	border-radius: 5px;
+	overflow: hidden;
+}
+
+.ocbc-progress-bar {
+	height: 100%;
+	background: #2271b1;
+	transition: width 0.2s ease;
+}
+
+.ocbc-table {
+	max-width: 960px;
+	margin-bottom: 24px;
+}
+
+.ocbc-table .ocbc-actions {
+	width: 120px;
+}
+
+.ocbc-badge {
+	display: inline-block;
+	padding: 2px 10px;
+	border-radius: 10px;
+	font-size: 12px;
+	background: #f0f0f1;
+	color: #3c434a;
+}
+
+.ocbc-badge-working {
+	background: #f0f6fc;
+	color: #2271b1;
+}
+
+.ocbc-badge-done {
+	background: #edfaef;
+	color: #007017;
+}
+
+.ocbc-badge-error {
+	background: #fcf0f1;
+	color: #b32d2e;
+}
+
+.ocbc-empty {
+	color: #646970;
+	font-style: italic;
+	margin-bottom: 24px;
+}
