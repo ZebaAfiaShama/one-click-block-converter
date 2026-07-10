@@ -1,7 +1,7 @@
 <?php
 /**
- * Plugin Name:       BlockShift — One Click Block Converter
- * Plugin URI:        https://github.com/ZebaAfiaShama/blockshift
+ * Plugin Name:       Zeba Classic to Blocks Converter
+ * Plugin URI:        https://github.com/ZebaAfiaShama/zeba-classic-to-blocks-converter
  * Description:       Convert Classic Editor content to Gutenberg blocks in one click — with automatic backups and one-click revert. 100% free, no ads, no upsells, no payment dependencies.
  * Version:           1.0.0
  * Requires at least: 5.9
@@ -10,27 +10,27 @@
  * Author URI:        https://github.com/ZebaAfiaShama
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:       blockshift
+ * Text Domain:       zeba-classic-to-blocks-converter
  */
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'OCBC_VERSION', '1.0.0' );
-define( 'OCBC_PLUGIN_FILE', __FILE__ );
-define( 'OCBC_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+define( 'ZCBC_VERSION', '1.0.0' );
+define( 'ZCBC_PLUGIN_FILE', __FILE__ );
+define( 'ZCBC_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 /**
  * Meta keys used to store the pre-conversion backup.
  */
-const OCBC_META_ORIGINAL  = '_ocbc_original_content';
-const OCBC_META_CONVERTED = '_ocbc_converted_at';
+const ZCBC_META_ORIGINAL  = '_zcbc_original_content';
+const ZCBC_META_CONVERTED = '_zcbc_converted_at';
 
 /**
  * Post types eligible for conversion: public, block-editor capable, REST-visible.
  *
  * @return string[]
  */
-function ocbc_get_supported_post_types() {
+function zcbc_get_supported_post_types() {
 	$types = get_post_types(
 		array(
 			'public'       => true,
@@ -50,73 +50,94 @@ function ocbc_get_supported_post_types() {
 	 *
 	 * @param string[] $types Post type slugs.
 	 */
-	return apply_filters( 'ocbc_supported_post_types', array_values( $types ) );
+	return apply_filters( 'zcbc_supported_post_types', array_values( $types ) );
+}
+
+/**
+ * Supported post types the current user may bulk-edit.
+ *
+ * A user must hold the edit_others_posts capability of each specific post
+ * type; a generic capability check is not enough because custom post types
+ * can map their own capabilities.
+ *
+ * @return string[]
+ */
+function zcbc_get_editable_post_types() {
+	return array_values(
+		array_filter(
+			zcbc_get_supported_post_types(),
+			static function ( $type ) {
+				$object = get_post_type_object( $type );
+				return $object && current_user_can( $object->cap->edit_others_posts );
+			}
+		)
+	);
 }
 
 /* -------------------------------------------------------------------------
  * Admin page
  * ---------------------------------------------------------------------- */
 
-add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'ocbc_plugin_action_links' );
-function ocbc_plugin_action_links( $links ) {
+add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'zcbc_plugin_action_links' );
+function zcbc_plugin_action_links( $links ) {
 	array_unshift(
 		$links,
-		'<a href="' . esc_url( admin_url( 'tools.php?page=blockshift' ) ) . '">' . esc_html__( 'Open Converter', 'blockshift' ) . '</a>'
+		'<a href="' . esc_url( admin_url( 'tools.php?page=zeba-classic-to-blocks-converter' ) ) . '">' . esc_html__( 'Open Converter', 'zeba-classic-to-blocks-converter' ) . '</a>'
 	);
 	return $links;
 }
 
-add_action( 'admin_menu', 'ocbc_register_admin_page' );
-function ocbc_register_admin_page() {
+add_action( 'admin_menu', 'zcbc_register_admin_page' );
+function zcbc_register_admin_page() {
 	add_management_page(
-		__( 'Block Converter', 'blockshift' ),
-		__( 'Block Converter', 'blockshift' ),
+		__( 'Block Converter', 'zeba-classic-to-blocks-converter' ),
+		__( 'Block Converter', 'zeba-classic-to-blocks-converter' ),
 		'edit_others_posts',
-		'blockshift',
-		'ocbc_render_admin_page'
+		'zeba-classic-to-blocks-converter',
+		'zcbc_render_admin_page'
 	);
 }
 
-function ocbc_render_admin_page() {
+function zcbc_render_admin_page() {
 	?>
-	<div class="wrap ocbc-wrap">
-		<h1><?php esc_html_e( 'BlockShift — One Click Block Converter', 'blockshift' ); ?></h1>
+	<div class="wrap zcbc-wrap">
+		<h1><?php esc_html_e( 'Zeba Classic to Blocks Converter', 'zeba-classic-to-blocks-converter' ); ?></h1>
 		<p class="description">
-			<?php esc_html_e( 'Converts Classic Editor content into Gutenberg blocks using the same converter built into the block editor. The original content of every post is backed up automatically, so you can revert any conversion with one click.', 'blockshift' ); ?>
+			<?php esc_html_e( 'Converts Classic Editor content into Gutenberg blocks using the same converter built into the block editor. The original content of every post is backed up automatically, so you can revert any conversion with one click.', 'zeba-classic-to-blocks-converter' ); ?>
 		</p>
 		<div class="notice notice-warning inline">
-			<p><?php esc_html_e( 'Recommended: create a full database backup before running a bulk conversion on a production site.', 'blockshift' ); ?></p>
+			<p><?php esc_html_e( 'Recommended: create a full database backup before running a bulk conversion on a production site.', 'zeba-classic-to-blocks-converter' ); ?></p>
 		</div>
-		<div id="ocbc-app">
-			<p><span class="spinner is-active" style="float:none;margin:0 8px 0 0;"></span><?php esc_html_e( 'Loading posts…', 'blockshift' ); ?></p>
+		<div id="zcbc-app">
+			<p><span class="spinner is-active" style="float:none;margin:0 8px 0 0;"></span><?php esc_html_e( 'Loading posts…', 'zeba-classic-to-blocks-converter' ); ?></p>
 		</div>
 	</div>
 	<?php
 }
 
-add_action( 'admin_enqueue_scripts', 'ocbc_enqueue_assets' );
-function ocbc_enqueue_assets( $hook ) {
-	if ( 'tools_page_blockshift' !== $hook ) {
+add_action( 'admin_enqueue_scripts', 'zcbc_enqueue_assets' );
+function zcbc_enqueue_assets( $hook ) {
+	if ( 'tools_page_zeba-classic-to-blocks-converter' !== $hook ) {
 		return;
 	}
 
 	wp_enqueue_script(
-		'ocbc-admin',
-		OCBC_PLUGIN_URL . 'assets/admin.js',
+		'zcbc-admin',
+		ZCBC_PLUGIN_URL . 'assets/admin.js',
 		array( 'wp-api-fetch', 'wp-autop', 'wp-blocks', 'wp-block-library', 'wp-shortcode', 'wp-dom-ready', 'wp-i18n' ),
-		OCBC_VERSION,
+		ZCBC_VERSION,
 		true
 	);
 
 	wp_enqueue_style(
-		'ocbc-admin',
-		OCBC_PLUGIN_URL . 'assets/admin.css',
+		'zcbc-admin',
+		ZCBC_PLUGIN_URL . 'assets/admin.css',
 		array(),
-		OCBC_VERSION
+		ZCBC_VERSION
 	);
 
 	$post_types = array();
-	foreach ( ocbc_get_supported_post_types() as $slug ) {
+	foreach ( zcbc_get_supported_post_types() as $slug ) {
 		$object = get_post_type_object( $slug );
 		if ( $object ) {
 			$post_types[] = array(
@@ -127,8 +148,8 @@ function ocbc_enqueue_assets( $hook ) {
 	}
 
 	wp_localize_script(
-		'ocbc-admin',
-		'OCBC',
+		'zcbc-admin',
+		'ZCBC',
 		array(
 			'postTypes'   => $post_types,
 			'perPage'     => 100,
@@ -136,23 +157,23 @@ function ocbc_enqueue_assets( $hook ) {
 		)
 	);
 
-	wp_set_script_translations( 'ocbc-admin', 'blockshift' );
+	wp_set_script_translations( 'zcbc-admin', 'zeba-classic-to-blocks-converter' );
 }
 
 /* -------------------------------------------------------------------------
  * REST API
  * ---------------------------------------------------------------------- */
 
-add_action( 'rest_api_init', 'ocbc_register_rest_routes' );
-function ocbc_register_rest_routes() {
+add_action( 'rest_api_init', 'zcbc_register_rest_routes' );
+function zcbc_register_rest_routes() {
 	register_rest_route(
-		'ocbc/v1',
+		'zcbc/v1',
 		'/posts',
 		array(
 			'methods'             => WP_REST_Server::READABLE,
-			'callback'            => 'ocbc_rest_list_posts',
+			'callback'            => 'zcbc_rest_list_posts',
 			'permission_callback' => static function () {
-				return current_user_can( 'edit_others_posts' );
+				return count( zcbc_get_editable_post_types() ) > 0;
 			},
 			'args'                => array(
 				'status'    => array(
@@ -180,12 +201,12 @@ function ocbc_register_rest_routes() {
 	);
 
 	register_rest_route(
-		'ocbc/v1',
+		'zcbc/v1',
 		'/convert',
 		array(
 			'methods'             => WP_REST_Server::CREATABLE,
-			'callback'            => 'ocbc_rest_convert',
-			'permission_callback' => 'ocbc_rest_can_edit_post',
+			'callback'            => 'zcbc_rest_convert',
+			'permission_callback' => 'zcbc_rest_can_edit_post',
 			'args'                => array(
 				'id'      => array(
 					'type'              => 'integer',
@@ -201,12 +222,12 @@ function ocbc_register_rest_routes() {
 	);
 
 	register_rest_route(
-		'ocbc/v1',
+		'zcbc/v1',
 		'/revert',
 		array(
 			'methods'             => WP_REST_Server::CREATABLE,
-			'callback'            => 'ocbc_rest_revert',
-			'permission_callback' => 'ocbc_rest_can_edit_post',
+			'callback'            => 'zcbc_rest_revert',
+			'permission_callback' => 'zcbc_rest_can_edit_post',
 			'args'                => array(
 				'id' => array(
 					'type'              => 'integer',
@@ -224,7 +245,7 @@ function ocbc_register_rest_routes() {
  * @param WP_REST_Request $request Request.
  * @return bool
  */
-function ocbc_rest_can_edit_post( $request ) {
+function zcbc_rest_can_edit_post( $request ) {
 	$id = (int) $request['id'];
 	return $id > 0 && current_user_can( 'edit_post', $id );
 }
@@ -235,10 +256,10 @@ function ocbc_rest_can_edit_post( $request ) {
  * @param WP_REST_Request $request Request.
  * @return WP_REST_Response
  */
-function ocbc_rest_list_posts( $request ) {
+function zcbc_rest_list_posts( $request ) {
 	$status    = $request['status'];
 	$post_type = $request['post_type'];
-	$supported = ocbc_get_supported_post_types();
+	$supported = zcbc_get_editable_post_types();
 
 	if ( 'any' !== $post_type && ! in_array( $post_type, $supported, true ) ) {
 		return new WP_REST_Response( array( 'posts' => array(), 'total' => 0, 'total_pages' => 0 ), 200 );
@@ -256,7 +277,7 @@ function ocbc_rest_list_posts( $request ) {
 	);
 
 	if ( 'converted' === $status ) {
-		$args['meta_key'] = OCBC_META_ORIGINAL; // phpcs:ignore WordPress.DB.SlowDBQuery
+		$args['meta_key'] = ZCBC_META_ORIGINAL; // phpcs:ignore WordPress.DB.SlowDBQuery
 	} else {
 		// Skip page-builder posts (e.g. Elementor): their post_content is
 		// generated output, not authored classic content.
@@ -272,20 +293,26 @@ function ocbc_rest_list_posts( $request ) {
 				'compare' => '!=',
 			),
 		);
-		add_filter( 'posts_where', 'ocbc_filter_classic_where' );
+		add_filter( 'posts_where', 'zcbc_filter_classic_where' );
 	}
 
 	$query = new WP_Query( $args );
 
 	if ( 'classic' === $status ) {
-		remove_filter( 'posts_where', 'ocbc_filter_classic_where' );
+		remove_filter( 'posts_where', 'zcbc_filter_classic_where' );
 	}
 
 	$posts = array();
 	foreach ( $query->posts as $post ) {
+		// map_meta_cap enforces the per-status capability here as well, e.g.
+		// edit_private_posts for private content — never expose raw content
+		// of a post the user cannot edit.
+		if ( ! current_user_can( 'edit_post', $post->ID ) ) {
+			continue;
+		}
 		$item = array(
 			'id'        => $post->ID,
-			'title'     => get_the_title( $post ) ? get_the_title( $post ) : __( '(no title)', 'blockshift' ),
+			'title'     => get_the_title( $post ) ? get_the_title( $post ) : __( '(no title)', 'zeba-classic-to-blocks-converter' ),
 			'type'      => $post->post_type,
 			'status'    => $post->post_status,
 			'edit_link' => get_edit_post_link( $post->ID, 'raw' ),
@@ -294,7 +321,7 @@ function ocbc_rest_list_posts( $request ) {
 		if ( 'classic' === $status ) {
 			$item['content'] = $post->post_content;
 		} else {
-			$item['converted_at'] = (int) get_post_meta( $post->ID, OCBC_META_CONVERTED, true );
+			$item['converted_at'] = (int) get_post_meta( $post->ID, ZCBC_META_CONVERTED, true );
 		}
 		$posts[] = $item;
 	}
@@ -315,7 +342,7 @@ function ocbc_rest_list_posts( $request ) {
  * @param string $where WHERE clause.
  * @return string
  */
-function ocbc_filter_classic_where( $where ) {
+function zcbc_filter_classic_where( $where ) {
 	global $wpdb;
 	$where .= " AND {$wpdb->posts}.post_content NOT LIKE '%<!-- wp:%' AND TRIM({$wpdb->posts}.post_content) != ''";
 	return $where;
@@ -327,24 +354,28 @@ function ocbc_filter_classic_where( $where ) {
  * @param WP_REST_Request $request Request.
  * @return WP_REST_Response|WP_Error
  */
-function ocbc_rest_convert( $request ) {
+function zcbc_rest_convert( $request ) {
 	$id      = (int) $request['id'];
 	$content = (string) $request['content'];
 	$post    = get_post( $id );
 
 	if ( ! $post ) {
-		return new WP_Error( 'ocbc_not_found', __( 'Post not found.', 'blockshift' ), array( 'status' => 404 ) );
+		return new WP_Error( 'zcbc_not_found', __( 'Post not found.', 'zeba-classic-to-blocks-converter' ), array( 'status' => 404 ) );
+	}
+
+	if ( ! in_array( $post->post_type, zcbc_get_editable_post_types(), true ) ) {
+		return new WP_Error( 'zcbc_forbidden_type', __( 'This post type is not supported for conversion.', 'zeba-classic-to-blocks-converter' ), array( 'status' => 403 ) );
 	}
 
 	if ( '' === trim( $content ) || ! has_blocks( $content ) ) {
-		return new WP_Error( 'ocbc_no_blocks', __( 'Converted content contains no blocks; post left untouched.', 'blockshift' ), array( 'status' => 400 ) );
+		return new WP_Error( 'zcbc_no_blocks', __( 'Converted content contains no blocks; post left untouched.', 'zeba-classic-to-blocks-converter' ), array( 'status' => 400 ) );
 	}
 
 	// Keep only the first backup — repeated conversions must not overwrite the true original.
-	if ( '' === (string) get_post_meta( $id, OCBC_META_ORIGINAL, true ) ) {
-		update_post_meta( $id, OCBC_META_ORIGINAL, wp_slash( $post->post_content ) );
+	if ( '' === (string) get_post_meta( $id, ZCBC_META_ORIGINAL, true ) ) {
+		update_post_meta( $id, ZCBC_META_ORIGINAL, wp_slash( $post->post_content ) );
 	}
-	update_post_meta( $id, OCBC_META_CONVERTED, time() );
+	update_post_meta( $id, ZCBC_META_CONVERTED, time() );
 
 	$result = wp_update_post(
 		array(
@@ -355,7 +386,7 @@ function ocbc_rest_convert( $request ) {
 	);
 
 	if ( is_wp_error( $result ) ) {
-		delete_post_meta( $id, OCBC_META_CONVERTED );
+		delete_post_meta( $id, ZCBC_META_CONVERTED );
 		return $result;
 	}
 
@@ -368,12 +399,12 @@ function ocbc_rest_convert( $request ) {
  * @param WP_REST_Request $request Request.
  * @return WP_REST_Response|WP_Error
  */
-function ocbc_rest_revert( $request ) {
+function zcbc_rest_revert( $request ) {
 	$id       = (int) $request['id'];
-	$original = get_post_meta( $id, OCBC_META_ORIGINAL, true );
+	$original = get_post_meta( $id, ZCBC_META_ORIGINAL, true );
 
 	if ( '' === (string) $original ) {
-		return new WP_Error( 'ocbc_no_backup', __( 'No backup found for this post.', 'blockshift' ), array( 'status' => 404 ) );
+		return new WP_Error( 'zcbc_no_backup', __( 'No backup found for this post.', 'zeba-classic-to-blocks-converter' ), array( 'status' => 404 ) );
 	}
 
 	$result = wp_update_post(
@@ -388,8 +419,8 @@ function ocbc_rest_revert( $request ) {
 		return $result;
 	}
 
-	delete_post_meta( $id, OCBC_META_ORIGINAL );
-	delete_post_meta( $id, OCBC_META_CONVERTED );
+	delete_post_meta( $id, ZCBC_META_ORIGINAL );
+	delete_post_meta( $id, ZCBC_META_CONVERTED );
 
 	return new WP_REST_Response( array( 'id' => $id, 'reverted' => true ), 200 );
 }

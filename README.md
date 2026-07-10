@@ -1,4 +1,4 @@
-# BlockShift — One Click Block Converter
+# Zeba Classic to Blocks Converter
 
 Convert Classic Editor content to Gutenberg blocks in one click — with automatic backups and one-click revert. 100% free, no ads, no upsells, no payment dependencies.
 
@@ -23,9 +23,9 @@ Recommended: take a full database backup before bulk operations on production.
 
 ## Developers
 
-- Post types offered in the UI can be filtered with `ocbc_supported_post_types`.
-- REST endpoints: `ocbc/v1/posts`, `ocbc/v1/convert`, `ocbc/v1/revert` (nonce + capability protected).
-- Backups live in `_ocbc_original_content` post meta; conversion timestamp in `_ocbc_converted_at`.
+- Post types offered in the UI can be filtered with `zcbc_supported_post_types`.
+- REST endpoints: `zcbc/v1/posts`, `zcbc/v1/convert`, `zcbc/v1/revert` (nonce + capability protected).
+- Backups live in `_zcbc_original_content` post meta; conversion timestamp in `_zcbc_converted_at`.
 
 ## License
 

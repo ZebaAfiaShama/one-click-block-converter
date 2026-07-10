@@ -1,4 +1,4 @@
-.ocbc-wrap .ocbc-toolbar {
+.zcbc-wrap .zcbc-toolbar {
 	margin: 16px 0;
 	display: flex;
 	align-items: center;
@@ -6,7 +6,7 @@
 	flex-wrap: wrap;
 }
 
-.ocbc-progress {
+.zcbc-progress {
 	flex: 1;
 	min-width: 200px;
 	max-width: 480px;
@@ -16,22 +16,22 @@
 	overflow: hidden;
 }
 
-.ocbc-progress-bar {
+.zcbc-progress-bar {
 	height: 100%;
 	background: #2271b1;
 	transition: width 0.2s ease;
 }
 
-.ocbc-table {
+.zcbc-table {
 	max-width: 960px;
 	margin-bottom: 24px;
 }
 
-.ocbc-table .ocbc-actions {
+.zcbc-table .zcbc-actions {
 	width: 120px;
 }
 
-.ocbc-badge {
+.zcbc-badge {
 	display: inline-block;
 	padding: 2px 10px;
 	border-radius: 10px;
@@ -40,22 +40,22 @@
 	color: #3c434a;
 }
 
-.ocbc-badge-working {
+.zcbc-badge-working {
 	background: #f0f6fc;
 	color: #2271b1;
 }
 
-.ocbc-badge-done {
+.zcbc-badge-done {
 	background: #edfaef;
 	color: #007017;
 }
 
-.ocbc-badge-error {
+.zcbc-badge-error {
 	background: #fcf0f1;
 	color: #b32d2e;
 }
 
-.ocbc-empty {
+.zcbc-empty {
 	color: #646970;
 	font-style: italic;
 	margin-bottom: 24px;

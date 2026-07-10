@@ -1,5 +1,5 @@
 /**
- * BlockShift — admin app.
+ * Zeba Classic to Blocks Converter — admin app.
  *
  * Conversion happens in the browser with wp.blocks.rawHandler(), the exact
  * converter behind the block editor's own "Convert to Blocks" button, then the
@@ -32,10 +32,10 @@
 		function fetchPage( page ) {
 			return apiFetch( {
 				path:
-					'/ocbc/v1/posts?status=' +
+					'/zcbc/v1/posts?status=' +
 					status +
 					'&per_page=' +
-					OCBC.perPage +
+					ZCBC.perPage +
 					'&page=' +
 					page,
 			} ).then( function ( res ) {
@@ -68,16 +68,16 @@
 			serialized = convertContent( post.content );
 		} catch ( err ) {
 			return Promise.reject(
-				new Error( err && err.message ? err.message : __( 'Conversion failed.', 'blockshift' ) )
+				new Error( err && err.message ? err.message : __( 'Conversion failed.', 'zeba-classic-to-blocks-converter' ) )
 			);
 		}
 
 		if ( null === serialized ) {
-			return Promise.reject( new Error( __( 'Nothing to convert.', 'blockshift' ) ) );
+			return Promise.reject( new Error( __( 'Nothing to convert.', 'zeba-classic-to-blocks-converter' ) ) );
 		}
 
 		return apiFetch( {
-			path: '/ocbc/v1/convert',
+			path: '/zcbc/v1/convert',
 			method: 'POST',
 			data: { id: post.id, content: serialized },
 		} );
@@ -85,7 +85,7 @@
 
 	function revertPost( post ) {
 		return apiFetch( {
-			path: '/ocbc/v1/revert',
+			path: '/zcbc/v1/revert',
 			method: 'POST',
 			data: { id: post.id },
 		} );
@@ -116,7 +116,7 @@
 
 	function statusBadge( post ) {
 		return el( 'span', {
-			class: 'ocbc-badge ocbc-badge-' + ( post.uiState || 'pending' ),
+			class: 'zcbc-badge zcbc-badge-' + ( post.uiState || 'pending' ),
 			text: post.uiMessage || post.status,
 		} );
 	}
@@ -128,10 +128,10 @@
 			actionButton = el( 'button', {
 				type: 'button',
 				class: 'button',
-				text: __( 'Revert', 'blockshift' ),
+				text: __( 'Revert', 'zeba-classic-to-blocks-converter' ),
 				onclick: function () {
 					post.uiState = 'working';
-					post.uiMessage = __( 'Reverting…', 'blockshift' );
+					post.uiMessage = __( 'Reverting…', 'zeba-classic-to-blocks-converter' );
 					render();
 					revertPost( post )
 						.then( function () {
@@ -142,7 +142,7 @@
 						} )
 						.catch( function ( err ) {
 							post.uiState = 'error';
-							post.uiMessage = err.message || __( 'Revert failed.', 'blockshift' );
+							post.uiMessage = err.message || __( 'Revert failed.', 'zeba-classic-to-blocks-converter' );
 							render();
 						} );
 				},
@@ -151,7 +151,7 @@
 			actionButton = el( 'button', {
 				type: 'button',
 				class: 'button',
-				text: __( 'Convert', 'blockshift' ),
+				text: __( 'Convert', 'zeba-classic-to-blocks-converter' ),
 				onclick: function () {
 					runQueue( [ post ] );
 				},
@@ -168,22 +168,22 @@
 			] ),
 			el( 'td', { text: post.type } ),
 			el( 'td', {}, [ statusBadge( post ) ] ),
-			el( 'td', { class: 'ocbc-actions' }, [ actionButton ] ),
+			el( 'td', { class: 'zcbc-actions' }, [ actionButton ] ),
 		] );
 	}
 
 	function table( posts, isConverted, emptyText ) {
 		if ( ! posts.length ) {
-			return el( 'p', { class: 'ocbc-empty', text: emptyText } );
+			return el( 'p', { class: 'zcbc-empty', text: emptyText } );
 		}
 
-		return el( 'table', { class: 'widefat striped ocbc-table' }, [
+		return el( 'table', { class: 'widefat striped zcbc-table' }, [
 			el( 'thead', {}, [
 				el( 'tr', {}, [
-					el( 'th', { text: __( 'Title', 'blockshift' ) } ),
-					el( 'th', { text: __( 'Type', 'blockshift' ) } ),
-					el( 'th', { text: __( 'Status', 'blockshift' ) } ),
-					el( 'th', { text: __( 'Action', 'blockshift' ) } ),
+					el( 'th', { text: __( 'Title', 'zeba-classic-to-blocks-converter' ) } ),
+					el( 'th', { text: __( 'Type', 'zeba-classic-to-blocks-converter' ) } ),
+					el( 'th', { text: __( 'Status', 'zeba-classic-to-blocks-converter' ) } ),
+					el( 'th', { text: __( 'Action', 'zeba-classic-to-blocks-converter' ) } ),
 				] ),
 			] ),
 			el(
@@ -205,13 +205,13 @@
 			text: state.running
 				? sprintf(
 						/* translators: 1: done count, 2: total count */
-						__( 'Converting… %1$d / %2$d', 'blockshift' ),
+						__( 'Converting… %1$d / %2$d', 'zeba-classic-to-blocks-converter' ),
 						state.done,
 						state.queueTotal
 				  )
 				: sprintf(
 						/* translators: %d: number of posts */
-						__( 'Convert All to Blocks (%d)', 'blockshift' ),
+						__( 'Convert All to Blocks (%d)', 'zeba-classic-to-blocks-converter' ),
 						state.classic.length
 				  ),
 			onclick: function () {
@@ -223,13 +223,13 @@
 			convertAll.setAttribute( 'disabled', 'disabled' );
 		}
 
-		var toolbar = el( 'div', { class: 'ocbc-toolbar' }, [ convertAll ] );
+		var toolbar = el( 'div', { class: 'zcbc-toolbar' }, [ convertAll ] );
 
 		if ( state.running ) {
 			var pct = state.queueTotal ? Math.round( ( state.done / state.queueTotal ) * 100 ) : 0;
 			toolbar.appendChild(
-				el( 'div', { class: 'ocbc-progress' }, [
-					el( 'div', { class: 'ocbc-progress-bar', style: 'width:' + pct + '%' } ),
+				el( 'div', { class: 'zcbc-progress' }, [
+					el( 'div', { class: 'zcbc-progress-bar', style: 'width:' + pct + '%' } ),
 				] )
 			);
 		}
@@ -240,7 +240,7 @@
 			el( 'h2', {
 				text: sprintf(
 					/* translators: %d: number of posts */
-					__( 'Classic content (%d)', 'blockshift' ),
+					__( 'Classic content (%d)', 'zeba-classic-to-blocks-converter' ),
 					state.classic.length
 				),
 			} )
@@ -249,7 +249,7 @@
 			table(
 				state.classic,
 				false,
-				__( 'No classic content found — everything is already blocks. 🎉', 'blockshift' )
+				__( 'No classic content found — everything is already blocks. 🎉', 'zeba-classic-to-blocks-converter' )
 			)
 		);
 
@@ -257,7 +257,7 @@
 			el( 'h2', {
 				text: sprintf(
 					/* translators: %d: number of posts */
-					__( 'Converted — revert available (%d)', 'blockshift' ),
+					__( 'Converted — revert available (%d)', 'zeba-classic-to-blocks-converter' ),
 					state.converted.length
 				),
 			} )
@@ -266,7 +266,7 @@
 			table(
 				state.converted,
 				true,
-				__( 'Nothing converted yet.', 'blockshift' )
+				__( 'Nothing converted yet.', 'zeba-classic-to-blocks-converter' )
 			)
 		);
 	}
@@ -293,18 +293,18 @@
 			}
 
 			post.uiState = 'working';
-			post.uiMessage = __( 'Converting…', 'blockshift' );
+			post.uiMessage = __( 'Converting…', 'zeba-classic-to-blocks-converter' );
 			render();
 
 			return convertPost( post )
 				.then( function () {
 					post.uiState = 'done';
-					post.uiMessage = __( 'Converted', 'blockshift' );
+					post.uiMessage = __( 'Converted', 'zeba-classic-to-blocks-converter' );
 				} )
 				.catch( function ( err ) {
 					post.uiState = 'error';
 					post.uiMessage =
-						( err && err.message ) || __( 'Failed', 'blockshift' );
+						( err && err.message ) || __( 'Failed', 'zeba-classic-to-blocks-converter' );
 				} )
 				.then( function () {
 					state.done++;
@@ -314,7 +314,7 @@
 		}
 
 		var workers = [];
-		for ( var i = 0; i < Math.min( OCBC.concurrency, queue.length ); i++ ) {
+		for ( var i = 0; i < Math.min( ZCBC.concurrency, queue.length ); i++ ) {
 			workers.push( next() );
 		}
 
@@ -344,7 +344,7 @@
 	}
 
 	wp.domReady( function () {
-		app = document.getElementById( 'ocbc-app' );
+		app = document.getElementById( 'zcbc-app' );
 		if ( ! app ) {
 			return;
 		}
@@ -353,7 +353,7 @@
 			app.replaceChildren();
 			app.appendChild(
 				el( 'div', { class: 'notice notice-error' }, [
-					el( 'p', { text: err.message || __( 'Failed to load posts.', 'blockshift' ) } ),
+					el( 'p', { text: err.message || __( 'Failed to load posts.', 'zeba-classic-to-blocks-converter' ) } ),
 				] )
 			);
 		} );

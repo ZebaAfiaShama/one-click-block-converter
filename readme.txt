@@ -1,4 +1,4 @@
-=== BlockShift — One Click Block Converter ===
+=== Zeba Classic to Blocks Converter ===
 Contributors: zebaafiashama
 Tags: gutenberg, classic editor, convert, blocks, migration
 Requires at least: 5.9
@@ -34,7 +34,7 @@ The plugin backs up every post's original content before converting it, and you 
 
 = Which post types are supported? =
 
-All public post types that support the editor and are visible in the REST API: posts, pages, and most custom post types. Developers can adjust the list with the `ocbc_supported_post_types` filter.
+All public post types that support the editor and are visible in the REST API: posts, pages, and most custom post types. Developers can adjust the list with the `zcbc_supported_post_types` filter.
 
 = What happens to shortcodes and embeds? =
 
@@ -42,7 +42,7 @@ Shortcodes become Shortcode blocks and keep working exactly as before. Embed URL
 
 = Where are the backups stored? =
 
-In post meta (`_ocbc_original_content`). Reverting a post restores the backup and removes the meta. Backups are kept when you deactivate the plugin; they are only removed if you delete (uninstall) the plugin.
+In post meta (`_zcbc_original_content`). Reverting a post restores the backup and removes the meta. Backups are kept when you deactivate the plugin; they are only removed if you delete (uninstall) the plugin.
 
 = Does this plugin call any external services? =
 
